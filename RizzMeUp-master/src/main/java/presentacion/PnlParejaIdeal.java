@@ -6,12 +6,24 @@ package presentacion;
 
 import dto.UsuarioDTO;
 import dto.LikeDTO;
+import dto.ResultadoCompatibilidadDTO;
 import explorarperfiles.IExplorarPerfiles;
 import explorarperfiles.ExplorarPerfiles;
+import parejaideal.IParejaIdeal;
+import parejaideal.ParejaIdeal;
 import java.time.LocalDateTime;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Base64;
+import java.io.ByteArrayInputStream;
+import javax.imageio.ImageIO;
+import java.awt.Image;
+import java.awt.BorderLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Erik
@@ -19,23 +31,47 @@ import java.util.List;
 public class PnlParejaIdeal extends javax.swing.JPanel {
 
     private IExplorarPerfiles negocioExplorar;
+    private IParejaIdeal negocioParejaIdeal;
+    private List<ResultadoCompatibilidadDTO> candidatos;
+    private int indiceActual = 0;
+    private JLabel lblFoto;
     private UsuarioDTO candidatoActual;
+
     /**
      * Creates new form PnlParejaIdeal
      */
     public PnlParejaIdeal() {
         initComponents();
+        negocioExplorar = new ExplorarPerfiles();
+        negocioParejaIdeal = new ParejaIdeal();
+        
+        lblFoto = new JLabel();
+        pnlFotoContenedor.setLayout(new BorderLayout());
+        pnlFotoContenedor.add(lblFoto, BorderLayout.CENTER);
+        
+        cargarPerfilFiltradoMock();
+        configurarAccionesBotones();
     }
     
     private void cargarPerfilFiltradoMock() {
         // Se asume que el ID del usuario logueado es 1L para la prueba
-        List<UsuarioDTO> candidatos = negocioExplorar.obtenerCandidatosFiltrados(1L);
-        
-        if (candidatos != null && !candidatos.isEmpty()) {
-            candidatoActual = candidatos.get(0);
+        candidatos = negocioParejaIdeal.obtenerMejoresOpciones(1L);
+        indiceActual = 0;
+        mostrarCandidatoActual();
+    }
+    
+    private void mostrarCandidatoActual() {
+        if (candidatos == null || candidatos.isEmpty()) {
+            mostrarError();
+            return;
+        }
+
+        if (indiceActual < candidatos.size()) {
+            ResultadoCompatibilidadDTO resultado = candidatos.get(indiceActual);
+            candidatoActual = resultado.getCandidato();
             
-            // Llenar los labels con los datos del DTO
-            lblNombreEdad2.setText(candidatoActual.getNombre() + ", " + candidatoActual.getEdad());
+            // Mostrar info en labels
+            lblNombreEdad2.setText(candidatoActual.getNombre() + ", " + candidatoActual.getEdad() + " (" + String.format("%.0f", resultado.getPuntajeTotal()) + "%)");
             
             if (candidatoActual.getProfesion() != null) {
                 lblProfesion.setText(candidatoActual.getProfesion());
@@ -44,7 +80,45 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
             }
             
             lblDescripcion.setText(candidatoActual.getDescripcionPersonal());
+            
+            // Mostrar imagen
+            String base64Image = candidatoActual.getFotoPerfilBase64();
+            if (base64Image != null && !base64Image.isEmpty()) {
+                try {
+                    byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+                    Image image = ImageIO.read(bis);
+                    if (image != null) {
+                        Image scaledImage = image.getScaledInstance(pnlFotoContenedor.getWidth(), pnlFotoContenedor.getHeight(), Image.SCALE_SMOOTH);
+                        lblFoto.setIcon(new ImageIcon(scaledImage));
+                        lblFoto.setText("");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error decodificando imagen: " + e.getMessage());
+                    lblFoto.setIcon(null);
+                    lblFoto.setText("Imagen no disponible");
+                }
+            } else {
+                lblFoto.setIcon(null);
+                lblFoto.setText("Sin foto");
+            }
+        } else {
+            // Ya no hay candidatos, llegamos al final
+            mostrarError();
         }
+    }
+
+    private void mostrarError() {
+        this.removeAll();
+        this.setLayout(new BorderLayout());
+        this.add(new PnlError(), BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void avanzarSiguienteCandidato() {
+        indiceActual++;
+        mostrarCandidatoActual();
     }
 
     private void configurarAccionesBotones() {
@@ -54,6 +128,9 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
                 if (candidatoActual != null) {
                     LikeDTO like = new LikeDTO(null, 1L, candidatoActual.getId(), true, LocalDateTime.now());
                     negocioExplorar.registrarLike(like);
+                    avanzarSiguienteCandidato();
+                } else {
+                    JOptionPane.showMessageDialog(null, "No hay mas perfiles para interactuar");
                 }
             }
         });
@@ -64,6 +141,9 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
                 if (candidatoActual != null) {
                     LikeDTO skip = new LikeDTO(null, 1L, candidatoActual.getId(), false, LocalDateTime.now());
                     negocioExplorar.registrarLike(skip);
+                    avanzarSiguienteCandidato();
+                } else {
+                    JOptionPane.showMessageDialog(null, "No hay mas perfiles para interactuar");
                 }
             }
         });
