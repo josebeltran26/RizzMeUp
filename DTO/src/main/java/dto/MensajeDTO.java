@@ -32,6 +32,61 @@ public class MensajeDTO {
         this.leido = leido;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getMatchId() {
+        return matchId;
+    }
+
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
+    }
+
+    public Long getRemitenteId() {
+        return remitenteId;
+    }
+
+    public void setRemitenteId(Long remitenteId) {
+        this.remitenteId = remitenteId;
+    }
+
+    public Long getDestinatarioId() {
+        return destinatarioId;
+    }
+
+    public void setDestinatarioId(Long destinatarioId) {
+        this.destinatarioId = destinatarioId;
+    }
+
+    public String getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
+
+    public LocalDateTime getFechaEnvio() {
+        return fechaEnvio;
+    }
+
+    public void setFechaEnvio(LocalDateTime fechaEnvio) {
+        this.fechaEnvio = fechaEnvio;
+    }
+
+    public boolean isLeido() {
+        return leido;
+    }
+
+    public void setLeido(boolean leido) {
+        this.leido = leido;
+    }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getMatchId() { return matchId; }
@@ -53,6 +108,9 @@ public class MensajeDTO {
                 + "id=" + id
                 + ", matchId=" + matchId
                 + ", remitenteId=" + remitenteId
+                + ", destinatarioId=" + destinatarioId
+                + ", contenido='" + contenido + '\''
+                + ", fechaEnvio=" + fechaEnvio
                 + ", contenido='" + contenido + '\''
                 + ", leido=" + leido
                 + '}';

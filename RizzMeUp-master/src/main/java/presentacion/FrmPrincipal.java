@@ -77,6 +77,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         btnParejaIdeal.setForeground(new java.awt.Color(102, 0, 51));
         btnParejaIdeal.setText("PAREJA IDEAL");
         btnParejaIdeal.setBorderPainted(false);
+        btnParejaIdeal.addActionListener(this::btnParejaIdealActionPerformed);
 
         btnUsuario.setBackground(new java.awt.Color(255, 213, 233));
         btnUsuario.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -167,6 +168,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         mostrarPanel(new PnlPerfilUsuario());
     }//GEN-LAST:event_btnUsuarioActionPerformed
+
+    private void btnParejaIdealActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParejaIdealActionPerformed
+        mostrarPanel(new PnlParejaIdeal());
+    }//GEN-LAST:event_btnParejaIdealActionPerformed
 
     /**
      * @param args the command line arguments

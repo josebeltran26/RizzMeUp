@@ -28,6 +28,45 @@ public class MatchDTO {
         this.activo = activo;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUsuario1Id() {
+        return usuario1Id;
+    }
+
+    public void setUsuario1Id(Long usuario1Id) {
+        this.usuario1Id = usuario1Id;
+    }
+
+    public Long getUsuario2Id() {
+        return usuario2Id;
+    }
+
+    public void setUsuario2Id(Long usuario2Id) {
+        this.usuario2Id = usuario2Id;
+    }
+
+    public LocalDateTime getFechaMatch() {
+        return fechaMatch;
+    }
+
+    public void setFechaMatch(LocalDateTime fechaMatch) {
+        this.fechaMatch = fechaMatch;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getUsuario1Id() { return usuario1Id; }

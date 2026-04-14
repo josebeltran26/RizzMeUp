@@ -12,6 +12,14 @@ import java.time.LocalDateTime;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Base64;
+import java.io.ByteArrayInputStream;
+import javax.imageio.ImageIO;
+import java.awt.Image;
+import java.awt.BorderLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,7 +28,11 @@ import java.util.List;
 public class PnlSwipe extends javax.swing.JPanel {
 
     private IExplorarPerfiles negocioExplorar;
+    private List<UsuarioDTO> candidatos;
+    private int indiceActual = 0;
+    private JLabel lblFoto;
     private UsuarioDTO candidatoActual;
+
     /**
      * Creates new form PnlSwipe
      */
@@ -29,16 +41,30 @@ public class PnlSwipe extends javax.swing.JPanel {
         
         negocioExplorar = new ExplorarPerfiles();
         
+        lblFoto = new JLabel();
+        pnlFotoContenedor.setLayout(new BorderLayout());
+        pnlFotoContenedor.add(lblFoto, BorderLayout.CENTER);
+        
         cargarPerfilMock();
         configurarAccionesBotones();
     }
     
     private void cargarPerfilMock() {
-        List<UsuarioDTO> candidatos = negocioExplorar.obtenerCandidatos(1L);
-        
-        if (candidatos != null && !candidatos.isEmpty()) {
-            candidatoActual = candidatos.get(0);
+        candidatos = negocioExplorar.obtenerCandidatos(1L);
+        indiceActual = 0;
+        mostrarCandidatoActual();
+    }
+    
+    private void mostrarCandidatoActual() {
+        if (candidatos == null || candidatos.isEmpty()) {
+            mostrarError();
+            return;
+        }
+
+        if (indiceActual < candidatos.size()) {
+            candidatoActual = candidatos.get(indiceActual);
             
+            // Llenar los labels con los datos del DTO
             lblNombreEdad2.setText(candidatoActual.getNombre() + ", " + candidatoActual.getEdad());
             
             if (candidatoActual.getProfesion() != null) {
@@ -48,9 +74,47 @@ public class PnlSwipe extends javax.swing.JPanel {
             }
             
             lblDescripcion.setText(candidatoActual.getDescripcionPersonal());
+            
+            // Mostrar imagen
+            String base64Image = candidatoActual.getFotoPerfilBase64();
+            if (base64Image != null && !base64Image.isEmpty()) {
+                try {
+                    byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+                    Image image = ImageIO.read(bis);
+                    if (image != null) {
+                        Image scaledImage = image.getScaledInstance(pnlFotoContenedor.getWidth(), pnlFotoContenedor.getHeight(), Image.SCALE_SMOOTH);
+                        lblFoto.setIcon(new ImageIcon(scaledImage));
+                        lblFoto.setText("");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error decodificando imagen: " + e.getMessage());
+                    lblFoto.setIcon(null);
+                    lblFoto.setText("Imagen no disponible");
+                }
+            } else {
+                lblFoto.setIcon(null);
+                lblFoto.setText("Sin foto");
+            }
+        } else {
+            // Ya no hay candidatos, llegamos al final
+            mostrarError();
         }
     }
-    
+
+    private void mostrarError() {
+        this.removeAll();
+        this.setLayout(new BorderLayout());
+        this.add(new PnlError(), BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void avanzarSiguienteCandidato() {
+        indiceActual++;
+        mostrarCandidatoActual();
+    }
+
     private void configurarAccionesBotones() {
         btnRizz.addActionListener(new ActionListener() {
             @Override
@@ -58,6 +122,9 @@ public class PnlSwipe extends javax.swing.JPanel {
                 if (candidatoActual != null) {
                     LikeDTO like = new LikeDTO(null, 1L, candidatoActual.getId(), true, LocalDateTime.now());
                     negocioExplorar.registrarLike(like);
+                    avanzarSiguienteCandidato();
+                } else {
+                    JOptionPane.showMessageDialog(null, "No hay mas perfiles para interactuar");
                 }
             }
         });
@@ -68,6 +135,9 @@ public class PnlSwipe extends javax.swing.JPanel {
                 if (candidatoActual != null) {
                     LikeDTO skip = new LikeDTO(null, 1L, candidatoActual.getId(), false, LocalDateTime.now());
                     negocioExplorar.registrarLike(skip);
+                    avanzarSiguienteCandidato();
+                } else {
+                    JOptionPane.showMessageDialog(null, "No hay mas perfiles para interactuar");
                 }
             }
         });

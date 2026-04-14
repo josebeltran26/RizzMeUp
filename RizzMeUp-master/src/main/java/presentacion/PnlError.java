@@ -57,9 +57,15 @@ public class PnlError extends javax.swing.JPanel {
         btnReintentar.setText("REINTENTAR");
         btnReintentar.setBorderPainted(false);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/presentacion/REINTENTAR200.png"))); // NOI18N
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/REINTENTAR200.png"))); // NOI18N
+        try {
+            java.net.URL imgUrl = getClass().getResource("/REINTENTAR200.png");
+            if (imgUrl != null) {
+                jLabel4.setIcon(new javax.swing.ImageIcon(imgUrl));
+                jLabel5.setIcon(new javax.swing.ImageIcon(imgUrl));
+            }
+        } catch (Exception e) {
+            System.err.println("Imagen REINTENTAR200.png no encontrada");
+        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

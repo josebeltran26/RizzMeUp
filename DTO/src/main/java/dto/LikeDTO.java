@@ -3,8 +3,7 @@ package dto;
 import java.time.LocalDateTime;
 
 /**
- * Esto es cuando un usuario le da "Rizz Me Up" o "Saltar"
- * a otro perfil, basicamente el swipe de la app.
+
  *
  * @author USUARIO
  */
