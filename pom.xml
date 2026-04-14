@@ -14,8 +14,16 @@
         <module>negocios_parejaIdeal</module>
         <module>RizzMeUp-master</module>
     </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
     </properties>
+
+
+    <modules>
+        <module>DTO</module>
+        <module>Negocio</module>
+        <module>Presentacion</module>
+    </modules>
 </project>
