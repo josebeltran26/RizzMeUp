@@ -1,3 +1,7 @@
+gestionperfil\IBoundaryGestion.class
 gestionperfil\IGestionPerfil.class
+gestionperfil\ControlGestion.class
+gestionperfil\UsuarioBO.class
 com\mycompany\negocios_gestionperfil\Negocios_gestionPerfil.class
+gestionperfil\IUsuarioBO.class
 gestionperfil\GestionPerfil.class
