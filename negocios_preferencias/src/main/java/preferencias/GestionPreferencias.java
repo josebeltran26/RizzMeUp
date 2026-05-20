@@ -1,40 +1,60 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package preferencias;
 
 import dto.PreferenciasUsuarioDTO;
-import dto.Hobbie;
-import dto.MateriaEscolar;
-import java.util.ArrayList;
+import persistencia.IPreferenciasDAO;
+import persistencia.PreferenciasDAO;
+
 /**
- *
- * @author Roger Jr
+ * Lógica de negocio para administrar las preferencias de búsqueda.
+ * Conectada directamente a la base de datos de MongoDB.
+ * 
+ * @author Roger Jr / Erik
  */
 public class GestionPreferencias implements IPreferencias {
 
+    private final IPreferenciasDAO preferenciasDAO;
+
+    public GestionPreferencias() {
+        this.preferenciasDAO = new PreferenciasDAO();
+    }
+
+    public GestionPreferencias(IPreferenciasDAO preferenciasDAO) {
+        this.preferenciasDAO = preferenciasDAO;
+    }
+
     @Override
     public PreferenciasUsuarioDTO obtenerPreferencias(Long usuarioId) {
-        PreferenciasUsuarioDTO preferenciasMock = new PreferenciasUsuarioDTO();
-        preferenciasMock.setUsuarioId(usuarioId);
-        preferenciasMock.setEdadMinima(18);
-        preferenciasMock.setEdadMaxima(25);
-        preferenciasMock.setGeneroBuscado("Femenino");
-        preferenciasMock.setCiudadPreferida("Ciudad Obregón");
-        preferenciasMock.setInteresEstudios(true);
-        
-        ArrayList<Hobbie> hobbiesBuscados = new ArrayList<>();
-        hobbiesBuscados.add(Hobbie.PROGRAMACION);
-        hobbiesBuscados.add(Hobbie.VIDEOJUEGOS);
-        preferenciasMock.setHobbiesPreferidos(hobbiesBuscados);
-        
-        return preferenciasMock;
+        try {
+            if (usuarioId == null) {
+                return null;
+            }
+            PreferenciasUsuarioDTO prefs = preferenciasDAO.buscarPorUsuario(usuarioId);
+            // Si el usuario no tiene preferencias guardadas aún, se le crean unas básicas por defecto
+            if (prefs == null) {
+                prefs = new PreferenciasUsuarioDTO();
+                prefs.setUsuarioId(usuarioId);
+                prefs.setEdadMinima(18);
+                prefs.setEdadMaxima(25);
+                prefs.setGeneroBuscado("Femenino");
+                prefs.setCiudadPreferida("Ciudad Obregón");
+                prefs.setInteresEstudios(true);
+            }
+            return prefs;
+        } catch (Exception e) {
+            System.err.println("[GestionPreferencias] Error al obtener preferencias de la BD: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
     public void guardarPreferencias(PreferenciasUsuarioDTO preferencias) {
-        System.out.println("Preferencias de busqueda guardadas exitosamente");
-        System.out.println("Buscando edades entre: " + preferencias.getEdadMinima() + " y " + preferencias.getEdadMaxima());
+        try {
+            if (preferencias != null) {
+                preferenciasDAO.guardarOActualizar(preferencias);
+                System.out.println("[GestionPreferencias] Preferencias guardadas exitosamente en MongoDB.");
+            }
+        } catch (Exception e) {
+            System.err.println("[GestionPreferencias] Error al guardar preferencias en la BD: " + e.getMessage());
+        }
     }
 }

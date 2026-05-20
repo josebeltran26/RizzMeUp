@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.mycompany.TestPareja" time="0.008" tests="0" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\RizzMeUp-master\target\test-classes;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\RizzMeUp-master\target\classes;C:\Users\Erik\.m2\repository\org\netbeans\external\AbsoluteLayout\RELEASE280\AbsoluteLayout-RELEASE280.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\DTO\target\DTO-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_explorarPerfiles\target\negocios_explorarPerfiles-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\persistencia\target\persistencia-1.0-SNAPSHOT.jar;C:\Users\Erik\.m2\repository\org\mongodb\mongodb-driver-sync\4.11.1\mongodb-driver-sync-4.11.1.jar;C:\Users\Erik\.m2\repository\org\mongodb\bson\4.11.1\bson-4.11.1.jar;C:\Users\Erik\.m2\repository\org\mongodb\mongodb-driver-core\4.11.1\mongodb-driver-core-4.11.1.jar;C:\Users\Erik\.m2\repository\org\mongodb\bson-record-codec\4.11.1\bson-record-codec-4.11.1.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_gestionPerfil\target\negocios_gestionPerfil-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_preferencias\target\negocios_preferencias-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_parejaIdeal\target\negocios_parejaIdeal-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_dar_like_generar_match\target\negocios_dar_like_generar_match-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\infraestructura\target\infraestructura-1.0-SNAPSHOT.jar;C:\Users\Erik\.m2\repository\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="America/Mazatlan"/>
+    <property name="user.country.format" value="US"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="user.country" value="MX"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-21\bin"/>
+    <property name="sun.java.command" value="C:\Users\Erik\AppData\Local\Temp\surefire9348084599177452094\surefirebooter-20260520111128723_3.jar C:\Users\Erik\AppData\Local\Temp\surefire9348084599177452094 2026-05-20T11-11-24_154-jvmRun1 surefire-20260520111128723_1tmp surefire_0-20260520111128723_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\RizzMeUp-master\target\test-classes;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\RizzMeUp-master\target\classes;C:\Users\Erik\.m2\repository\org\netbeans\external\AbsoluteLayout\RELEASE280\AbsoluteLayout-RELEASE280.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\DTO\target\DTO-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_explorarPerfiles\target\negocios_explorarPerfiles-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\persistencia\target\persistencia-1.0-SNAPSHOT.jar;C:\Users\Erik\.m2\repository\org\mongodb\mongodb-driver-sync\4.11.1\mongodb-driver-sync-4.11.1.jar;C:\Users\Erik\.m2\repository\org\mongodb\bson\4.11.1\bson-4.11.1.jar;C:\Users\Erik\.m2\repository\org\mongodb\mongodb-driver-core\4.11.1\mongodb-driver-core-4.11.1.jar;C:\Users\Erik\.m2\repository\org\mongodb\bson-record-codec\4.11.1\bson-record-codec-4.11.1.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_gestionPerfil\target\negocios_gestionPerfil-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_preferencias\target\negocios_preferencias-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_parejaIdeal\target\negocios_parejaIdeal-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\negocios_dar_like_generar_match\target\negocios_dar_like_generar_match-1.0-SNAPSHOT.jar;C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\infraestructura\target\infraestructura-1.0-SNAPSHOT.jar;C:\Users\Erik\.m2\repository\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\Erik"/>
+    <property name="user.language" value="es"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2025-10-21"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-21"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\RizzMeUp-master"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="surefire.real.class.path" value="C:\Users\Erik\AppData\Local\Temp\surefire9348084599177452094\surefirebooter-20260520111128723_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.9+7-LTS-338"/>
+    <property name="user.name" value="Erik"/>
+    <property name="stdout.encoding" value="Cp1252"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="maven.ext.class.path" value="D:\netbeans\java\maven-nblib\netbeans-eventspy.jar"/>
+    <property name="localRepository" value="C:\Users\Erik\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\Erik\AppData\Local\Temp\"/>
+    <property name="java.version" value="21.0.9"/>
+    <property name="user.dir" value="C:\Users\Erik\OneDrive\Documentos\ProyectoRizzMeUp\RizzMeUp\RizzMeUp-master"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.language.format" value="en"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-21\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Razer\ChromaBroadcast\bin;C:\Program Files\Razer\ChromaBroadcast\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Users\Erik\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Cloudflare\Cloudflare WARP\;C:\Users\Erik\AppData\Local\Programs\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Users\Erik\AppData\Local\Microsoft\WindowsApps;C:\Users\Erik\AppData\Local\GitHubDesktop\bin;C:\Users\Erik\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Erik\AppData\Local\spicetify;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="Cp1252"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="21.0.9+7-LTS-338"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="65.0"/>
+  </properties>
+</testsuite>

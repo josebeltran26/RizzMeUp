@@ -30,7 +30,9 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
     }
     
     private void cargarDatosPerfil() {
-        usuarioLogueado = negocioPerfil.obtenerPerfil(1L);
+        Long miId = SesionUsuario.getInstancia().getUsuarioId();
+        if (miId == null) miId = 1L;
+        usuarioLogueado = negocioPerfil.obtenerPerfil(miId);
         
         if (usuarioLogueado != null) {
             tfNombre.setText(usuarioLogueado.getNombre());

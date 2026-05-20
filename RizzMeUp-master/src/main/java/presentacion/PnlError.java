@@ -61,7 +61,8 @@ public class PnlError extends javax.swing.JPanel {
             java.net.URL imgUrl = getClass().getResource("/REINTENTAR200.png");
             if (imgUrl != null) {
                 jLabel4.setIcon(new javax.swing.ImageIcon(imgUrl));
-                jLabel5.setIcon(new javax.swing.ImageIcon(imgUrl));
+                jLabel5.setIcon(null);
+                jLabel5.setVisible(false);
             }
         } catch (Exception e) {
             System.err.println("Imagen REINTENTAR200.png no encontrada");

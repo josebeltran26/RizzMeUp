@@ -86,9 +86,17 @@ public class FrmLogin extends JFrame {
                 
                 @Override 
                 public void registroExitoso(Long idAsignado) {
+                    // Obtener el perfil completo y guardarlo en sesion
+                    try {
+                        UsuarioDTO perfil = infra.obtenerPerfilPorCorreo(txtCorreo.getText());
+                        if (perfil != null) {
+                            SesionUsuario.getInstancia().iniciarSesion(perfil);
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("[FrmLogin] No se pudo cargar el perfil completo: " + ex.getMessage());
+                    }
                     JOptionPane.showMessageDialog(FrmLogin.this, "¡Bienvenido a RizzMeUp!");
                     FrmPrincipal frm = new FrmPrincipal();
-                    // frm.setUsuarioId(idAsignado); // Si tu FrmPrincipal lo soporta
                     frm.setVisible(true);
                     dispose();
                 }

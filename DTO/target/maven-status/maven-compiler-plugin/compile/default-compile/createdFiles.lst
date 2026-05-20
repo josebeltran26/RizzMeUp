@@ -1,0 +1,10 @@
+dto\MatchDTO.class
+dto\MateriaEscolar.class
+dto\ImagenUtil.class
+dto\UsuarioDTO.class
+dto\Hobbie.class
+dto\PreferenciasUsuarioDTO.class
+dto\MensajeDTO.class
+dto\ResultadoCompatibilidadDTO.class
+dto\GeneroMusical.class
+dto\LikeDTO.class
