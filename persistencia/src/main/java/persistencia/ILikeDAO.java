@@ -31,9 +31,4 @@ public interface ILikeDAO {
      * Verifica si el usuario ya hizo swipe a un candidato especifico.
      */
     boolean yaHizoSwipe(Long usuarioOrigenId, Long usuarioDestinoId);
-
-    /**
-     * Retorna los IDs de usuarios que le han dado like (Rizz Me Up) al usuario especificado.
-     */
-    List<Long> obtenerIdsQueMeDieronLike(Long usuarioId);
 }

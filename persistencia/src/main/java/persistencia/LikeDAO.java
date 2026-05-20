@@ -76,18 +76,4 @@ public class LikeDAO implements ILikeDAO {
         )).first();
         return doc != null;
     }
-
-    @Override
-    public List<Long> obtenerIdsQueMeDieronLike(Long usuarioId) {
-        List<Long> likedMe = new ArrayList<>();
-        if (usuarioId == null) return likedMe;
-        col.find(Filters.and(
-                Filters.eq("usuarioDestinoId", usuarioId),
-                Filters.eq("esLike", true)
-        )).forEach(doc -> {
-            Long origId = doc.getLong("usuarioOrigenId");
-            if (origId != null) likedMe.add(origId);
-        });
-        return likedMe;
-    }
 }

@@ -1,17 +1,12 @@
 package persistencia;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Singleton de conexion a MongoDB.
  * Una sola instancia de MongoClient para toda la aplicacion.
- * Timeout de 4 segundos para que el servidor devuelva error rapido
- * en lugar de colgar el cliente TCP.
  *
  * @author USUARIO
  */

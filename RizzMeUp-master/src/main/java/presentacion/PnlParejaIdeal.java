@@ -49,14 +49,13 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
         pnlFotoContenedor.setLayout(new BorderLayout());
         pnlFotoContenedor.add(lblFoto, BorderLayout.CENTER);
         
-        cargarPerfilFiltrado();
+        cargarPerfilFiltradoMock();
         configurarAccionesBotones();
     }
     
-    private void cargarPerfilFiltrado() {
-        Long miId = SesionUsuario.getInstancia().getUsuarioId();
-        if (miId == null) miId = 1L;
-        candidatos = negocioParejaIdeal.obtenerMejoresOpciones(miId);
+    private void cargarPerfilFiltradoMock() {
+        // Se asume que el ID del usuario logueado es 1L para la prueba
+        candidatos = negocioParejaIdeal.obtenerMejoresOpciones(1L);
         indiceActual = 0;
         mostrarCandidatoActual();
     }
@@ -127,9 +126,7 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (candidatoActual != null) {
-                    Long miId = SesionUsuario.getInstancia().getUsuarioId();
-                    if (miId == null) miId = 1L;
-                    LikeDTO like = new LikeDTO(null, miId, candidatoActual.getId(), true, LocalDateTime.now());
+                    LikeDTO like = new LikeDTO(null, 1L, candidatoActual.getId(), true, LocalDateTime.now());
                     negocioExplorar.registrarLike(like);
                     avanzarSiguienteCandidato();
                 } else {
@@ -142,9 +139,7 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (candidatoActual != null) {
-                    Long miId = SesionUsuario.getInstancia().getUsuarioId();
-                    if (miId == null) miId = 1L;
-                    LikeDTO skip = new LikeDTO(null, miId, candidatoActual.getId(), false, LocalDateTime.now());
+                    LikeDTO skip = new LikeDTO(null, 1L, candidatoActual.getId(), false, LocalDateTime.now());
                     negocioExplorar.registrarLike(skip);
                     avanzarSiguienteCandidato();
                 } else {

@@ -6,7 +6,6 @@ package presentacion;
 
 import dto.UsuarioDTO;
 import dto.LikeDTO;
-import dto.MatchDTO;
 import explorarperfiles.IExplorarPerfiles;
 import explorarperfiles.ExplorarPerfiles;
 import java.time.LocalDateTime;
@@ -18,15 +17,9 @@ import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import presentacion.GestorLikes;
-import presentacion.GestorMatches;
 
 /**
  *
@@ -39,10 +32,6 @@ public class PnlSwipe extends javax.swing.JPanel {
     private int indiceActual = 0;
     private JLabel lblFoto;
     private UsuarioDTO candidatoActual;
-    
-    private GestorLikes gestorLikes;
-    private GestorMatches gestorMatches;
-    private JLabel lblRizzBanner;
 
     /**
      * Creates new form PnlSwipe
@@ -51,41 +40,29 @@ public class PnlSwipe extends javax.swing.JPanel {
         initComponents();
         
         negocioExplorar = new ExplorarPerfiles();
-        gestorLikes = new GestorLikes();
-        gestorMatches = new GestorMatches();
-        
-        lblRizzBanner = new JLabel("", SwingConstants.CENTER);
-        lblRizzBanner.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblRizzBanner.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        add(lblRizzBanner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 350, 25));
         
         lblFoto = new JLabel();
         pnlFotoContenedor.setLayout(new BorderLayout());
         pnlFotoContenedor.add(lblFoto, BorderLayout.CENTER);
         
-        cargarPerfil();
+        cargarPerfilMock();
         configurarAccionesBotones();
     }
     
-    private void cargarPerfil() {
-        Long miId = SesionUsuario.getInstancia().getUsuarioId();
-        if (miId == null) miId = 1L;
-        candidatos = negocioExplorar.obtenerCandidatos(miId);
+    private void cargarPerfilMock() {
+        candidatos = negocioExplorar.obtenerCandidatos(1L);
         indiceActual = 0;
         mostrarCandidatoActual();
     }
     
     private void mostrarCandidatoActual() {
         if (candidatos == null || candidatos.isEmpty()) {
-            candidatoActual = null;
-            actualizarBannerRizz();
             mostrarError();
             return;
         }
 
         if (indiceActual < candidatos.size()) {
             candidatoActual = candidatos.get(indiceActual);
-            actualizarBannerRizz();
             
             // Llenar los labels con los datos del DTO
             lblNombreEdad2.setText(candidatoActual.getNombre() + ", " + candidatoActual.getEdad());
@@ -121,32 +98,8 @@ public class PnlSwipe extends javax.swing.JPanel {
             }
         } else {
             // Ya no hay candidatos, llegamos al final
-            candidatoActual = null;
-            actualizarBannerRizz();
             mostrarError();
         }
-    }
-
-    private void actualizarBannerRizz() {
-        if (lblRizzBanner == null) return;
-        if (candidatoActual != null) {
-            Long miId = SesionUsuario.getInstancia().getUsuarioId();
-            if (miId == null) miId = 1L;
-            boolean yaDioRizz = gestorLikes.verificarReciprocidad(miId, candidatoActual.getId());
-            if (yaDioRizz) {
-                lblRizzBanner.setText("🔥 ¡Este usuario te ha dado Rizz! 🔥");
-                lblRizzBanner.setBackground(new Color(255, 51, 153));
-                lblRizzBanner.setForeground(Color.WHITE);
-                lblRizzBanner.setOpaque(true);
-            } else {
-                lblRizzBanner.setText("");
-                lblRizzBanner.setOpaque(false);
-            }
-        } else {
-            lblRizzBanner.setText("");
-            lblRizzBanner.setOpaque(false);
-        }
-        lblRizzBanner.repaint();
     }
 
     private void mostrarError() {
@@ -167,42 +120,8 @@ public class PnlSwipe extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (candidatoActual != null) {
-                    Long miId = SesionUsuario.getInstancia().getUsuarioId();
-                    if (miId == null) miId = 1L;
-                    final Long usuarioId = miId;
-                    try {
-                        // 1. Registrar like a través del subsistema de Likes
-                        boolean esReciproco = gestorLikes.darLike(usuarioId, candidatoActual.getId());
-                        
-                        // 2. Si hay reciprocidad, intentar generar el Match
-                        if (esReciproco) {
-                            try {
-                                gestorMatches.generarMatch(usuarioId, candidatoActual.getId());
-                                
-                                // Crear el MatchDTO temporal para la vista de celebración
-                                MatchDTO match = new MatchDTO(null, usuarioId, candidatoActual.getId(), LocalDateTime.now(), true);
-                                
-                                // Obtener perfiles para el FrmMatch
-                                UsuarioDTO usuarioLogueado = negocioExplorar.obtenerPerfilPorId(usuarioId);
-                                if (usuarioLogueado == null || usuarioLogueado.getNombre() == null) {
-                                    usuarioLogueado = new UsuarioDTO();
-                                    usuarioLogueado.setId(usuarioId);
-                                    usuarioLogueado.setNombre(SesionUsuario.getInstancia().getNombre() != null ? SesionUsuario.getInstancia().getNombre() : "Tú");
-                                    usuarioLogueado.setCorreo(SesionUsuario.getInstancia().getCorreo() != null ? SesionUsuario.getInstancia().getCorreo() : "usuario@rizzmeup.com");
-                                }
-                                
-                                // Desplegar pantalla de celebración
-                                gestorMatches.desplegarPantallaMatch(match, usuarioLogueado, candidatoActual);
-                            } catch (Exception ex) {
-                                // Captura la excepción si falla la validación de match (Flujo Alterno del Match)
-                                System.out.println("[PnlSwipe] Excepción en flujo alterno de Match: " + ex.getMessage());
-                            }
-                        }
-                    } catch (Exception ex) {
-                        // Captura la excepción si falla el registro de like (Flujo Alterno del Like)
-                        System.out.println("[PnlSwipe] Excepción en flujo alterno de Like: " + ex.getMessage());
-                    }
-                    
+                    LikeDTO like = new LikeDTO(null, 1L, candidatoActual.getId(), true, LocalDateTime.now());
+                    negocioExplorar.registrarLike(like);
                     avanzarSiguienteCandidato();
                 } else {
                     JOptionPane.showMessageDialog(null, "No hay mas perfiles para interactuar");
@@ -214,10 +133,8 @@ public class PnlSwipe extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (candidatoActual != null) {
-                    Long miId = SesionUsuario.getInstancia().getUsuarioId();
-                    if (miId == null) miId = 1L;
-                    LikeDTO skip = new LikeDTO(null, miId, candidatoActual.getId(), false, LocalDateTime.now());
-                    gestorLikes.registrarLike(skip);
+                    LikeDTO skip = new LikeDTO(null, 1L, candidatoActual.getId(), false, LocalDateTime.now());
+                    negocioExplorar.registrarLike(skip);
                     avanzarSiguienteCandidato();
                 } else {
                     JOptionPane.showMessageDialog(null, "No hay mas perfiles para interactuar");
