@@ -11,6 +11,11 @@ package presentacion;
 public class Presentacion_RizzMeUp {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        // Ejecutar en el hilo de la interfaz grafica
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new FrmLogin().setVisible(true);
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
 presentacion\Presentacion_RizzMeUp.class
 presentacion\PnlParejaIdeal.class
+presentacion\FrmLogin.class
 presentacion\PnlParejaIdeal$1.class
 presentacion\PnlSwipe$1.class
 presentacion\FrmPrincipal.class
@@ -8,3 +9,7 @@ presentacion\PnlParejaIdeal$2.class
 presentacion\PnlSwipe$2.class
 presentacion\PnlSwipe.class
 presentacion\PnlPerfilUsuario.class
+presentacion\FrmRegistro.class
+presentacion\FrmLogin$1.class
+presentacion\FrmRegistro$1.class
+presentacion\Presentacion_RizzMeUp$1.class

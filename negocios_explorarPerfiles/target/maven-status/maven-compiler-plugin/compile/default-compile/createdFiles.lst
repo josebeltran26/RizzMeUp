@@ -1,3 +1,7 @@
 explorarperfiles\ExplorarPerfiles.class
+explorarperfiles\IBoundaryDestino.class
+explorarperfiles\ILikeBO.class
+explorarperfiles\ControlDestino.class
+explorarperfiles\LikeBO.class
 com\mycompany\negocios_explorarperfiles\Negocios_explorarPerfiles.class
 explorarperfiles\IExplorarPerfiles.class

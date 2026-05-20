@@ -187,4 +187,13 @@ public class ExplorarPerfiles implements IExplorarPerfiles {
     public void registrarLike(LikeDTO like) {
         System.out.println("Like guardado para " + like.getUsuarioDestinoId());
     }
+
+    @Override
+    public UsuarioDTO obtenerPerfilPorId(Long usuarioId) {
+        // Mock simple para compilar
+        UsuarioDTO u = new UsuarioDTO();
+        u.setId(usuarioId);
+        u.setNombre("Candidato " + usuarioId);
+        return u;
+    }
 }
