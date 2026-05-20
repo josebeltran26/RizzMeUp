@@ -51,6 +51,49 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
         
         cargarPerfilFiltrado();
         configurarAccionesBotones();
+        
+        // Escalar dinámicamente el icono del botón de reportar
+        try {
+            java.net.URL imgUrl = getClass().getResource("/ICONOREPORTAR.png");
+            if (imgUrl != null) {
+                ImageIcon iconOriginal = new ImageIcon(imgUrl);
+                Image imgEscalada = iconOriginal.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                abrirReporte.setIcon(new ImageIcon(imgEscalada));
+            }
+        } catch (Exception e) {
+            // Silently ignore
+        }
+        
+        setComponentZOrder(abrirReporte, 0);
+
+        abrirReporte.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirReporte();
+            }
+        });
+        
+        cargarPerfilFiltrado();
+        configurarAccionesBotones();
+    }
+    
+    private void abrirReporte() {
+        if (candidatoActual == null) {
+            JOptionPane.showMessageDialog(this, "No hay ningún perfil seleccionado para reportar.");
+            return;
+        }
+        java.awt.Window ventanaPadre = javax.swing.SwingUtilities.getWindowAncestor(this);
+        Long idUsuarioSesion = SesionUsuario.getInstancia().getUsuarioId();
+        if (idUsuarioSesion == null) idUsuarioSesion = 1L;
+
+        presentacion.FrmReportarUsuario dialogo =
+                new presentacion.FrmReportarUsuario(
+                        (java.awt.Frame) ventanaPadre,
+                        String.valueOf(idUsuarioSesion),         // <--- Agrega String.valueOf aquí
+                        String.valueOf(candidatoActual.getId())  // <--- Agrega String.valueOf aquí
+                );
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setVisible(true);
     }
     
     private void cargarPerfilFiltrado() {
@@ -175,6 +218,7 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         pnlFotoContenedor = new javax.swing.JPanel();
+        abrirReporte = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(228, 114, 159));
         setPreferredSize(new java.awt.Dimension(860, 770));
@@ -289,10 +333,19 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
         );
 
         add(pnlFotoContenedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 40, 350, -1));
+
+        abrirReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ICONOREPORTAR.png"))); // NOI18N
+        abrirReporte.setBorderPainted(false);
+        abrirReporte.setContentAreaFilled(false);
+        abrirReporte.setFocusPainted(false);
+        abrirReporte.setOpaque(false);
+        abrirReporte.setToolTipText("Reportar perfil o foto inapropiada");
+        add(abrirReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 50, 30, 30));
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton abrirReporte;
     private javax.swing.JButton btnRizz;
     private javax.swing.JButton btnSaltar;
     private javax.swing.JPanel contenedorEtiquetas;
