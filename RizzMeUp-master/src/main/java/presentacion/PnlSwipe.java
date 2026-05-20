@@ -98,6 +98,34 @@ public class PnlSwipe extends javax.swing.JPanel {
             
             lblDescripcion.setText(candidatoActual.getDescripcionPersonal());
             
+            // Llenar etiquetas de hobbies/intereses
+            java.util.List<dto.Hobbie> hobbies = candidatoActual.getHobbies();
+            if (hobbies != null && !hobbies.isEmpty()) {
+                if (hobbies.size() > 0) {
+                    jLabel1.setText(hobbies.get(0).name());
+                    jLabel1.setVisible(true);
+                } else {
+                    jLabel1.setVisible(false);
+                }
+                if (hobbies.size() > 1) {
+                    jLabel2.setText(hobbies.get(1).name());
+                    jLabel2.setVisible(true);
+                } else {
+                    jLabel2.setVisible(false);
+                }
+                if (hobbies.size() > 2) {
+                    jLabel3.setText(hobbies.get(2).name());
+                    jLabel3.setVisible(true);
+                } else {
+                    jLabel3.setVisible(false);
+                }
+            } else {
+                jLabel1.setText("Sin etiquetas");
+                jLabel1.setVisible(true);
+                jLabel2.setVisible(false);
+                jLabel3.setVisible(false);
+            }
+            
             // Mostrar imagen
             String base64Image = candidatoActual.getFotoPerfilBase64();
             if (base64Image != null && !base64Image.isEmpty()) {
@@ -106,7 +134,9 @@ public class PnlSwipe extends javax.swing.JPanel {
                     ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
                     Image image = ImageIO.read(bis);
                     if (image != null) {
-                        Image scaledImage = image.getScaledInstance(pnlFotoContenedor.getWidth(), pnlFotoContenedor.getHeight(), Image.SCALE_SMOOTH);
+                        int w = pnlFotoContenedor.getWidth() > 0 ? pnlFotoContenedor.getWidth() : 350;
+                        int h = pnlFotoContenedor.getHeight() > 0 ? pnlFotoContenedor.getHeight() : 350;
+                        Image scaledImage = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
                         lblFoto.setIcon(new ImageIcon(scaledImage));
                         lblFoto.setText("");
                     }
@@ -151,8 +181,63 @@ public class PnlSwipe extends javax.swing.JPanel {
 
     private void mostrarError() {
         this.removeAll();
-        this.setLayout(new BorderLayout());
-        this.add(new PnlError(), BorderLayout.CENTER);
+        this.setLayout(new java.awt.BorderLayout());
+
+        // Panel central de "sin candidatos"
+        javax.swing.JPanel pnlVacio = new javax.swing.JPanel();
+        pnlVacio.setLayout(null);
+        pnlVacio.setBackground(new java.awt.Color(255, 213, 233));
+
+        javax.swing.JLabel lblEmoji = new javax.swing.JLabel("💔", javax.swing.SwingConstants.CENTER);
+        lblEmoji.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 72));
+        lblEmoji.setBounds(0, 80, 860, 100);
+
+        javax.swing.JLabel lblTitulo = new javax.swing.JLabel("¡Ya viste a todos!", javax.swing.SwingConstants.CENTER);
+        lblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 32));
+        lblTitulo.setForeground(new java.awt.Color(255, 0, 102));
+        lblTitulo.setBounds(0, 200, 860, 50);
+
+        javax.swing.JLabel lblSub = new javax.swing.JLabel("Resetea para volver a ver los perfiles", javax.swing.SwingConstants.CENTER);
+        lblSub.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 18));
+        lblSub.setForeground(new java.awt.Color(150, 0, 80));
+        lblSub.setBounds(0, 265, 860, 30);
+
+        javax.swing.JButton btnResetear = new javax.swing.JButton("🔄  RESETEAR SWIPES");
+        btnResetear.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
+        btnResetear.setBackground(new java.awt.Color(255, 51, 153));
+        btnResetear.setForeground(java.awt.Color.WHITE);
+        btnResetear.setBorderPainted(false);
+        btnResetear.setFocusPainted(false);
+        btnResetear.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnResetear.setBounds(280, 330, 300, 55);
+        btnResetear.addActionListener(ev -> {
+            Long miId = SesionUsuario.getInstancia().getUsuarioId();
+            if (miId == null) miId = 1L;
+            negocioExplorar.resetearSwipes(miId);
+            // Reconstruir el panel original
+            this.removeAll();
+            this.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+            initComponents();
+            // Re-añadir componentes dinámicos
+            lblRizzBanner = new javax.swing.JLabel("", javax.swing.SwingConstants.CENTER);
+            lblRizzBanner.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
+            lblRizzBanner.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            add(lblRizzBanner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 350, 25));
+            lblFoto = new javax.swing.JLabel();
+            pnlFotoContenedor.setLayout(new java.awt.BorderLayout());
+            pnlFotoContenedor.add(lblFoto, java.awt.BorderLayout.CENTER);
+            cargarPerfil();
+            configurarAccionesBotones();
+            this.revalidate();
+            this.repaint();
+        });
+
+        pnlVacio.add(lblEmoji);
+        pnlVacio.add(lblTitulo);
+        pnlVacio.add(lblSub);
+        pnlVacio.add(btnResetear);
+
+        this.add(pnlVacio, java.awt.BorderLayout.CENTER);
         this.revalidate();
         this.repaint();
     }

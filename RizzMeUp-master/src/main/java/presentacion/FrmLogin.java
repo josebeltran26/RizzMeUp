@@ -77,30 +77,23 @@ public class FrmLogin extends JFrame {
     private void iniciarSesion() {
         try {
             IActualizarPersonas infra = new ActualizarPersonas();
-            ControlGestion control = new ControlGestion(infra);
-
-            control.setBoundaryGestion(new IBoundaryGestion() {
-                @Override public void mostrarPerfil(UsuarioDTO perfil) {}
-                @Override public void actualizacionExitosa() {}
-                @Override public void eliminacionExitosa() {}
-                
-                @Override 
-                public void registroExitoso(Long idAsignado) {
-                    JOptionPane.showMessageDialog(FrmLogin.this, "¡Bienvenido a RizzMeUp!");
-                    FrmPrincipal frm = new FrmPrincipal();
-                    // frm.setUsuarioId(idAsignado); // Si tu FrmPrincipal lo soporta
-                    frm.setVisible(true);
-                    dispose();
-                }
-                
-                @Override 
-                public void mostrarError(String mensaje) {
-                    JOptionPane.showMessageDialog(FrmLogin.this, mensaje, "Error de Login", JOptionPane.ERROR_MESSAGE);
-                }
-            });
-
-            control.iniciarSesion(txtCorreo.getText(), new String(txtContrasena.getPassword()));
-
+            // Obtener el perfil directamente para poder guardar la sesion
+            UsuarioDTO perfil = infra.obtenerPerfilPorCorreo(txtCorreo.getText());
+            if (perfil == null) {
+                JOptionPane.showMessageDialog(this, "No se encontro un usuario con ese correo.", "Error de Login", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // Verificar contraseña
+            if (!java.util.Objects.equals(perfil.getContrasena(), new String(txtContrasena.getPassword()))) {
+                JOptionPane.showMessageDialog(this, "Contrasena incorrecta.", "Error de Login", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // Guardar sesion activa
+            SesionUsuario.getInstancia().iniciarSesion(perfil);
+            JOptionPane.showMessageDialog(this, "¡Bienvenido, " + perfil.getNombre() + "!");
+            FrmPrincipal frm = new FrmPrincipal();
+            frm.setVisible(true);
+            dispose();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error de conexion: " + ex.getMessage());
         }

@@ -161,7 +161,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSwipeActionPerformed
 
     private void btnMensajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMensajesActionPerformed
-        // TODO add your handling code here:
+        Long miId = SesionUsuario.getInstancia().getUsuarioId();
+        if (miId == null) miId = 1L;
+        mostrarPanel(new enviarmsg.presentacion.PnlMensajeria(miId));
     }//GEN-LAST:event_btnMensajesActionPerformed
 
     private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed

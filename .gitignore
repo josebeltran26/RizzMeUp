@@ -1,1 +1,30 @@
+# Archivos compilados de Maven/Java
+target/
+build/
+dist/
+*.class
+*.jar
+*.war
+*.ear
 
+# IDE NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# IDE - otros
+.idea/
+*.iml
+.vscode/
+
+# Logs y temporales
+*.log
+*.tmp
+*.swp
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db

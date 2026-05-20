@@ -15,6 +15,7 @@
         <module>negocios_dar_like_generar_match</module>
         <module>infraestructura</module>
         <module>persistencia</module>
+        <module>negocios_enviarmsg</module>
         <module>RizzMeUp-master</module>
     </modules>
 

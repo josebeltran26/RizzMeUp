@@ -366,6 +366,12 @@ public class AccesoDatos implements IAccesoDatos {
         return vistos;
     }
 
+    @Override
+    public void limpiarSwipes(Long usuarioId) {
+        MongoCollection<Document> col = bd.getCollection("likes");
+        col.deleteMany(Filters.eq("usuarioOrigenId", usuarioId));
+    }
+
     // =========================================================================
     // Match
     // =========================================================================

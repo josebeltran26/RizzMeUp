@@ -117,6 +117,14 @@ public interface IAccesoDatos {
      */
     List<Long> obtenerYaVistos(Long usuarioId);
 
+    /**
+     * Elimina todos los likes/swipes hechos por el usuario.
+     * Permite volver a ver candidatos ya vistos (reset de swipes).
+     *
+     * @param usuarioId el ID del usuario
+     */
+    void limpiarSwipes(Long usuarioId);
+
     // =========================================================================
     // Match
     // =========================================================================
