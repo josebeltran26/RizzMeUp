@@ -12,6 +12,7 @@
         <module>negocios_explorarPerfiles</module>
         <module>negocios_gestionPerfil</module>
         <module>negocios_parejaIdeal</module>
+        <module>negocios_dar_like_generar_match</module>
         <module>infraestructura</module>
         <module>persistencia</module>
         <module>RizzMeUp-master</module>
