@@ -10,6 +10,23 @@ import gestionperfil.IGestionPerfil;
 import gestionperfil.GestionPerfil;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import javax.imageio.ImageIO;
+import java.util.Base64;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Dimension;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  *
  * @author Erik
@@ -18,6 +35,8 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
     
     private IGestionPerfil negocioPerfil;
     private UsuarioDTO usuarioLogueado;
+    private javax.swing.JButton btnGuardar;
+
     /**
      * Creates new form PnlPerfilUsuario
      */
@@ -26,11 +45,122 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
         
         negocioPerfil = new GestionPerfil();
         
+        // Configurar combobox de ciudades con valores válidos de RizzMeUp
+        cbCiudad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { 
+            "Guadalajara", "CDMX", "Monterrey", "Querétaro", "Mérida", "Cancún", "Puebla", "Tijuana" 
+        }));
+        
+        // Modificar posicion y tamaño de avatar y boton de subir foto programaticamente para que se vea premium
+        if (getLayout() instanceof org.netbeans.lib.awtextra.AbsoluteLayout) {
+            org.netbeans.lib.awtextra.AbsoluteLayout layout = (org.netbeans.lib.awtextra.AbsoluteLayout) getLayout();
+            layout.addLayoutComponent(lblfoto, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 40, 150, 150));
+            layout.addLayoutComponent(btnsubirfoto, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 205, 150, 35));
+        } else {
+            lblfoto.setBounds(650, 40, 150, 150);
+            btnsubirfoto.setBounds(650, 205, 150, 35);
+        }
+        
+        // Agregar accion para subir foto de perfil
+        btnsubirfoto.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subirFotoActionPerformed(evt);
+            }
+        });
+        
+        // Crear e integrar boton premium para guardar cambios
+        btnGuardar = new javax.swing.JButton("GUARDAR CAMBIOS");
+        btnGuardar.setBackground(new java.awt.Color(255, 51, 153));
+        btnGuardar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        btnGuardar.setForeground(java.awt.Color.WHITE);
+        btnGuardar.setBorderPainted(false);
+        btnGuardar.setFocusPainted(false);
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    guardarCambios();
+                    javax.swing.JOptionPane.showMessageDialog(PnlPerfilUsuario.this, 
+                            "¡Perfil guardado con éxito!", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    javax.swing.JOptionPane.showMessageDialog(PnlPerfilUsuario.this, 
+                            "Error al guardar el perfil: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 600, 250, 45));
+        
         cargarDatosPerfil();
     }
     
+    private void subirFotoActionPerformed(java.awt.event.ActionEvent evt) {
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Selecciona tu Foto de Perfil");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Imágenes (JPG, PNG)", "jpg", "jpeg", "png"));
+        int userSelection = fileChooser.showOpenDialog(this);
+        if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToUpload = fileChooser.getSelectedFile();
+            try {
+                byte[] fileContent = java.nio.file.Files.readAllBytes(fileToUpload.toPath());
+                String base64Image = java.util.Base64.getEncoder().encodeToString(fileContent);
+                usuarioLogueado.setFotoPerfilBase64(base64Image);
+                actualizarLabelAvatar();
+            } catch (Exception ex) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error al cargar la imagen: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void actualizarLabelAvatar() {
+        if (usuarioLogueado != null && usuarioLogueado.getFotoPerfilBase64() != null && !usuarioLogueado.getFotoPerfilBase64().isEmpty()) {
+            lblfoto.setIcon(new javax.swing.ImageIcon(crearImagenCircular(usuarioLogueado.getFotoPerfilBase64(), 150)));
+            lblfoto.setText("");
+        } else {
+            lblfoto.setIcon(new javax.swing.ImageIcon(crearAvatarPorDefecto(150, usuarioLogueado != null ? usuarioLogueado.getNombre() : "?")));
+            lblfoto.setText("");
+        }
+    }
+    
+    private Image crearImagenCircular(String base64, int diametro) {
+        try {
+            byte[] bytes = Base64.getDecoder().decode(base64);
+            BufferedImage src = ImageIO.read(new ByteArrayInputStream(bytes));
+            if (src == null) {
+                return crearAvatarPorDefecto(diametro, "?");
+            }
+            BufferedImage formatted = new BufferedImage(diametro, diametro, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = formatted.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setClip(new Ellipse2D.Float(0, 0, diametro, diametro));
+            g2.drawImage(src, 0, 0, diametro, diametro, null);
+            g2.dispose();
+            return formatted;
+        } catch (Exception e) {
+            return crearAvatarPorDefecto(diametro, "?");
+        }
+    }
+
+    private Image crearAvatarPorDefecto(int diametro, String nombre) {
+        BufferedImage img = new BufferedImage(diametro, diametro, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = img.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(new Color(255, 51, 153));
+        g2.fill(new Ellipse2D.Float(0, 0, diametro, diametro));
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Segoe UI", Font.BOLD, 48)); // Letra grande para avatar de 150px
+        String inicial = nombre != null && !nombre.isEmpty() ? nombre.substring(0, 1).toUpperCase() : "?";
+        FontMetrics fm = g2.getFontMetrics();
+        int x = (diametro - fm.stringWidth(inicial)) / 2;
+        int y = ((diametro - fm.getHeight()) / 2) + fm.getAscent();
+        g2.drawString(inicial, x, y);
+        g2.dispose();
+        return img;
+    }
+    
     private void cargarDatosPerfil() {
-        usuarioLogueado = negocioPerfil.obtenerPerfil(1L);
+        Long miId = SesionUsuario.getInstancia().getUsuarioId();
+        if (miId == null) miId = 1L;
+        usuarioLogueado = negocioPerfil.obtenerPerfil(miId);
         
         if (usuarioLogueado != null) {
             tfNombre.setText(usuarioLogueado.getNombre());
@@ -38,6 +168,7 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
             tfProfesion.setText(usuarioLogueado.getProfesion());
             taDesc.setText(usuarioLogueado.getDescripcionPersonal());
             cbCiudad.setSelectedItem(usuarioLogueado.getCiudad());
+            actualizarLabelAvatar();
             
             List<Hobbie> misHobbies = usuarioLogueado.getHobbies();
             if (misHobbies != null) {
@@ -70,6 +201,7 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
         if (cbGastronomia.isSelected()) nuevosHobbies.add(Hobbie.COCINAR);
         if (cbViajes.isSelected()) nuevosHobbies.add(Hobbie.VIAJAR);
         if (cbSenderismo.isSelected()) nuevosHobbies.add(Hobbie.SENDERISMO);
+        if (cbMusica.isSelected()) nuevosHobbies.add(Hobbie.MUSICA);
         
         usuarioLogueado.setHobbies(nuevosHobbies);
         
@@ -91,8 +223,8 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
+        btnsubirfoto = new javax.swing.JButton();
+        lblfoto = new javax.swing.JLabel();
         taDescripcion = new javax.swing.JScrollPane();
         taDesc = new javax.swing.JTextArea();
         tfNombre = new javax.swing.JTextField();
@@ -145,16 +277,16 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
         jLabel6.setText("CIUDAD: ");
         add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, -1, -1));
 
-        jButton1.setBackground(new java.awt.Color(255, 213, 233));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(51, 0, 51));
-        jButton1.setText("SUBIR FOTO");
-        jButton1.setBorderPainted(false);
-        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 180, -1, -1));
+        btnsubirfoto.setBackground(new java.awt.Color(255, 213, 233));
+        btnsubirfoto.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnsubirfoto.setForeground(new java.awt.Color(51, 0, 51));
+        btnsubirfoto.setText("SUBIR FOTO");
+        btnsubirfoto.setBorderPainted(false);
+        add(btnsubirfoto, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 180, -1, -1));
 
-        jLabel7.setText("jLabel7");
-        jLabel7.setPreferredSize(new java.awt.Dimension(300, 300));
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 80, 70, 70));
+        lblfoto.setText("jLabel7");
+        lblfoto.setPreferredSize(new java.awt.Dimension(300, 300));
+        add(lblfoto, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 80, 70, 70));
 
         taDesc.setBackground(new java.awt.Color(213, 185, 212));
         taDesc.setColumns(20);
@@ -238,6 +370,7 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnsubirfoto;
     private javax.swing.JCheckBox cbCine;
     private javax.swing.JComboBox<String> cbCiudad;
     private javax.swing.JCheckBox cbFiesta;
@@ -250,14 +383,13 @@ public class PnlPerfilUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cbSenderismo;
     private javax.swing.JCheckBox cbViajes;
     private javax.swing.JCheckBox cbVideojuegos;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel lblfoto;
     private javax.swing.JTextArea taDesc;
     private javax.swing.JScrollPane taDescripcion;
     private javax.swing.JTextField tfEdad;

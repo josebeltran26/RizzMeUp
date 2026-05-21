@@ -23,4 +23,11 @@ public interface IExplorarPerfiles {
      * @return el UsuarioDTO correspondiente, o null si no existe
      */
     public UsuarioDTO obtenerPerfilPorId(Long usuarioId);
+
+    /**
+     * Elimina todos los swipes del usuario para que vuelva a ver a los candidatos.
+     *
+     * @param usuarioId el ID del usuario
+     */
+    public void resetearSwipes(Long usuarioId);
 }

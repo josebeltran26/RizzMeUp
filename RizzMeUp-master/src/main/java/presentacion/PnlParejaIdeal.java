@@ -54,8 +54,9 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
     }
     
     private void cargarPerfilFiltradoMock() {
-        // Se asume que el ID del usuario logueado es 1L para la prueba
-        candidatos = negocioParejaIdeal.obtenerMejoresOpciones(1L);
+        Long miId = SesionUsuario.getInstancia().getUsuarioId();
+        if (miId == null) miId = 1L;
+        candidatos = negocioParejaIdeal.obtenerMejoresOpciones(miId);
         indiceActual = 0;
         mostrarCandidatoActual();
     }
@@ -81,6 +82,34 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
             
             lblDescripcion.setText(candidatoActual.getDescripcionPersonal());
             
+            // Llenar etiquetas de hobbies/intereses
+            java.util.List<dto.Hobbie> hobbies = candidatoActual.getHobbies();
+            if (hobbies != null && !hobbies.isEmpty()) {
+                if (hobbies.size() > 0) {
+                    jLabel1.setText(hobbies.get(0).name());
+                    jLabel1.setVisible(true);
+                } else {
+                    jLabel1.setVisible(false);
+                }
+                if (hobbies.size() > 1) {
+                    jLabel2.setText(hobbies.get(1).name());
+                    jLabel2.setVisible(true);
+                } else {
+                    jLabel2.setVisible(false);
+                }
+                if (hobbies.size() > 2) {
+                    jLabel3.setText(hobbies.get(2).name());
+                    jLabel3.setVisible(true);
+                } else {
+                    jLabel3.setVisible(false);
+                }
+            } else {
+                jLabel1.setText("Sin etiquetas");
+                jLabel1.setVisible(true);
+                jLabel2.setVisible(false);
+                jLabel3.setVisible(false);
+            }
+            
             // Mostrar imagen
             String base64Image = candidatoActual.getFotoPerfilBase64();
             if (base64Image != null && !base64Image.isEmpty()) {
@@ -89,7 +118,9 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
                     ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
                     Image image = ImageIO.read(bis);
                     if (image != null) {
-                        Image scaledImage = image.getScaledInstance(pnlFotoContenedor.getWidth(), pnlFotoContenedor.getHeight(), Image.SCALE_SMOOTH);
+                        int w = pnlFotoContenedor.getWidth() > 0 ? pnlFotoContenedor.getWidth() : 350;
+                        int h = pnlFotoContenedor.getHeight() > 0 ? pnlFotoContenedor.getHeight() : 350;
+                        Image scaledImage = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
                         lblFoto.setIcon(new ImageIcon(scaledImage));
                         lblFoto.setText("");
                     }
@@ -126,7 +157,9 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (candidatoActual != null) {
-                    LikeDTO like = new LikeDTO(null, 1L, candidatoActual.getId(), true, LocalDateTime.now());
+                    Long miId = SesionUsuario.getInstancia().getUsuarioId();
+                    if (miId == null) miId = 1L;
+                    LikeDTO like = new LikeDTO(null, miId, candidatoActual.getId(), true, LocalDateTime.now());
                     negocioExplorar.registrarLike(like);
                     avanzarSiguienteCandidato();
                 } else {
@@ -139,7 +172,9 @@ public class PnlParejaIdeal extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (candidatoActual != null) {
-                    LikeDTO skip = new LikeDTO(null, 1L, candidatoActual.getId(), false, LocalDateTime.now());
+                    Long miId = SesionUsuario.getInstancia().getUsuarioId();
+                    if (miId == null) miId = 1L;
+                    LikeDTO skip = new LikeDTO(null, miId, candidatoActual.getId(), false, LocalDateTime.now());
                     negocioExplorar.registrarLike(skip);
                     avanzarSiguienteCandidato();
                 } else {
