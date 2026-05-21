@@ -8,6 +8,9 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -15,6 +18,8 @@ import javax.swing.SwingConstants;
 import negocio.dto.ReporteDTO;
 import negocio.subsistema.ControlGestionReportes;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -22,111 +27,94 @@ import java.util.ArrayList;
  */
 public class FrmReportarUsuario extends javax.swing.JDialog {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmReportarUsuario.class.getName());
-    
-    private static final Color COLOR_FONDO = new Color(255, 220, 235);
-    private static final Color COLOR_TEXTO = new Color(102, 0, 51);
-    private static final Color COLOR_BTN_MOTIVO = new Color(255, 200, 220);
-    private static final Color COLOR_BTN_HOVER = new Color(240, 150, 190);
+    private static final java.util.logging.Logger logger =
+            java.util.logging.Logger.getLogger(
+                    FrmReportarUsuario.class.getName());
+
+    private static final Color COLOR_FONDO = new Color(255, 180, 205);
+    private static final Color COLOR_FONDO_HOVER = new Color(255, 153, 192);
+    private static final Color COLOR_TEXTO = new Color(45, 18, 32);
+    private static final Color COLOR_LINEA = new Color(205, 105, 145);
 
     private final String idUsuarioReportante;
     private final String idUsuarioReportado;
 
-    private javax.swing.JPanel pnlPrincipal;
-    private javax.swing.JLabel lblTitulo;
-    private javax.swing.JLabel lblPregunta;
-    private javax.swing.JButton btnNoMeGusta;
-    private javax.swing.JButton btnFotoInapropiada;
-    private javax.swing.JButton btnEstafas;
-    private javax.swing.JButton btnSuplantacion;
-    private javax.swing.JButton btnCerrar;
+    private JPanel pnlPrincipal;
+    private JLabel lblTitulo;
+    private JLabel lblPregunta;
+    private JButton btnNoMeGusta;
+    private JButton btnFotoInapropiada;
+    private JButton btnEstafas;
+    private JButton btnSuplantacion;
+    private JButton btnCerrar;
 
-    /**
-     * Creates new form FrmReportarUsuario
-     */
-    public FrmReportarUsuario(java.awt.Frame parent,
+    public FrmReportarUsuario(Frame parent,
             String idUsuarioReportante,
-            String idUsuarioReportado) 
-    {
+            String idUsuarioReportado) {
         super(parent, true);
         this.idUsuarioReportante = idUsuarioReportante;
         this.idUsuarioReportado = idUsuarioReportado;
         initVista();
         initEventos();
     }
-    
-    private void initVista()
-    {
+
+    private void initVista() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Reportar");
         setResizable(false);
-        setSize(380, 360);
-        setLocationRelativeTo(getParent());
         setUndecorated(true);
+        setBackground(new Color(0, 0, 0, 0));
 
-        pnlPrincipal = new javax.swing.JPanel();
+        pnlPrincipal = new RoundedPanel(18);
         pnlPrincipal.setBackground(COLOR_FONDO);
-        pnlPrincipal.setBorder(
-                BorderFactory.createLineBorder(new Color(200, 150, 170), 1));
-        pnlPrincipal.setLayout(
-                new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlPrincipal.setLayout(null);
+        pnlPrincipal.setBorder(BorderFactory.createEmptyBorder());
+        pnlPrincipal.setPreferredSize(new java.awt.Dimension(340, 210));
 
-        // boton cerrar x
-        btnCerrar = new javax.swing.JButton("X");
+        btnCerrar = new JButton("X");
         btnCerrar.setBackground(COLOR_FONDO);
         btnCerrar.setForeground(COLOR_TEXTO);
-        btnCerrar.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnCerrar.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         btnCerrar.setBorderPainted(false);
         btnCerrar.setFocusPainted(false);
         btnCerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        pnlPrincipal.add(btnCerrar,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(
-                        10, 10, 40, 28));
+        btnCerrar.setBounds(12, 8, 38, 32);
+        pnlPrincipal.add(btnCerrar);
 
-        // titulo centrado
-        lblTitulo = new javax.swing.JLabel("Reportar");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lblTitulo = new JLabel("Reportar");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
         lblTitulo.setForeground(COLOR_TEXTO);
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        pnlPrincipal.add(lblTitulo,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(
-                        0, 10, 380, 30));
+        lblTitulo.setBounds(0, 12, 340, 24);
+        pnlPrincipal.add(lblTitulo);
 
-        // pregunta
-        lblPregunta = new javax.swing.JLabel(
-                "Por que quieres reportar este asunto?");
-        lblPregunta.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        lblPregunta = new JLabel("Por que quieres reportar este usuario?");
+        lblPregunta.setFont(new Font("Segoe UI", Font.BOLD, 9));
         lblPregunta.setForeground(COLOR_TEXTO);
-        lblPregunta.setHorizontalAlignment(SwingConstants.CENTER);
-        pnlPrincipal.add(lblPregunta,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(
-                        0, 52, 380, 25));
+        lblPregunta.setBounds(18, 48, 300, 18);
+        pnlPrincipal.add(lblPregunta);
 
-        // botones de motivo
         btnNoMeGusta = crearBotonMotivo("No me gusta");
         btnFotoInapropiada = crearBotonMotivo("Foto inapropiada");
         btnEstafas = crearBotonMotivo("Estafas, fraude o spam");
         btnSuplantacion = crearBotonMotivo("Suplantacion de identidad");
 
-        pnlPrincipal.add(btnNoMeGusta,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(
-                        20, 98, 340, 45));
-        pnlPrincipal.add(btnFotoInapropiada,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(
-                        20, 153, 340, 45));
-        pnlPrincipal.add(btnEstafas,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(
-                        20, 208, 340, 45));
-        pnlPrincipal.add(btnSuplantacion,
-                new org.netbeans.lib.awtextra.AbsoluteConstraints(
-                        20, 263, 340, 45));
+        btnNoMeGusta.setBounds(0, 75, 340, 28);
+        btnFotoInapropiada.setBounds(0, 103, 340, 28);
+        btnEstafas.setBounds(0, 131, 340, 28);
+        btnSuplantacion.setBounds(0, 159, 340, 28);
+
+        pnlPrincipal.add(btnNoMeGusta);
+        pnlPrincipal.add(btnFotoInapropiada);
+        pnlPrincipal.add(btnEstafas);
+        pnlPrincipal.add(btnSuplantacion);
 
         setContentPane(pnlPrincipal);
         pack();
+        setLocationRelativeTo(getParent());
     }
 
-    private void initEventos()
-    {
+    private void initEventos() {
         btnCerrar.addActionListener(e -> dispose());
 
         btnNoMeGusta.addActionListener(
@@ -142,11 +130,8 @@ public class FrmReportarUsuario extends javax.swing.JDialog {
                 e -> enviarReporte("Suplantacion de identidad"));
     }
 
-    private void enviarReporte(String motivo)
-    {
-        try
-        {
-            // verifica si ya existe un reporte pendiente entre estos usuarios
+    private void enviarReporte(String motivo) {
+        try {
             boolean duplicado = ControlGestionReportes
                     .getInstancia()
                     .validarDuplicado(idUsuarioReportante, idUsuarioReportado);
@@ -155,8 +140,7 @@ public class FrmReportarUsuario extends javax.swing.JDialog {
 
             Frame padre = (Frame) getParent();
 
-            if (duplicado)
-            {
+            if (duplicado) {
                 FrmConfirmacionReporte confirmacion =
                         new FrmConfirmacionReporte(
                                 padre,
@@ -167,7 +151,6 @@ public class FrmReportarUsuario extends javax.swing.JDialog {
                 return;
             }
 
-            // construye el dto y envia el reporte
             ReporteDTO dto = new ReporteDTO();
             dto.setIdUsuarioReportante(idUsuarioReportante);
             dto.setIdUsuarioReportado(idUsuarioReportado);
@@ -178,8 +161,7 @@ public class FrmReportarUsuario extends javax.swing.JDialog {
                     .getInstancia()
                     .crearReporte(dto);
 
-            if (creado)
-            {
+            if (creado) {
                 FrmConfirmacionReporte confirmacion =
                         new FrmConfirmacionReporte(
                                 padre,
@@ -187,49 +169,68 @@ public class FrmReportarUsuario extends javax.swing.JDialog {
                                 "Gracias por reportar esta publicacion");
                 confirmacion.setLocationRelativeTo(padre);
                 confirmacion.setVisible(true);
-            }
-            else
-            {
+            } else {
                 JOptionPane.showMessageDialog(
                         padre,
-                        "ocurrio un error al enviar el reporte",
-                        "error",
+                        "Ocurrio un error al enviar el reporte",
+                        "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
-        }
-        catch (Exception e)
-        {
+
+        } catch (Exception e) {
             logger.severe("error al enviar reporte: " + e.getMessage());
         }
     }
 
-    private JButton crearBotonMotivo(String texto)
-    {
-        JButton btn = new JButton(texto + "  >");
-        btn.setBackground(COLOR_BTN_MOTIVO);
+    private JButton crearBotonMotivo(String texto) {
+        JButton btn = new JButton(texto + "        >");
+        btn.setBackground(COLOR_FONDO);
         btn.setForeground(COLOR_TEXTO);
-        btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        btn.setBorderPainted(false);
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        btn.setBorder(BorderFactory.createMatteBorder(
+                1, 0, 0, 0, COLOR_LINEA));
         btn.setFocusPainted(false);
-        btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btn.addMouseListener(new java.awt.event.MouseAdapter()
-        {
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent e)
-            {
-                btn.setBackground(COLOR_BTN_HOVER);
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setBackground(COLOR_FONDO_HOVER);
             }
 
             @Override
-            public void mouseExited(java.awt.event.MouseEvent e)
-            {
-                btn.setBackground(COLOR_BTN_MOTIVO);
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setBackground(COLOR_FONDO);
             }
         });
 
         return btn;
+    }
+
+    private static class RoundedPanel extends JPanel {
+
+        private final int radius;
+
+        public RoundedPanel(int radius) {
+            this.radius = radius;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(),
+                    radius, radius);
+
+            g2.dispose();
+            super.paintComponent(g);
+        }
     }
     
     

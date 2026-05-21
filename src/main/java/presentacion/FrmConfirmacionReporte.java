@@ -7,7 +7,13 @@ package presentacion;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
@@ -16,23 +22,24 @@ import javax.swing.SwingConstants;
  */
 public class FrmConfirmacionReporte extends javax.swing.JDialog {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmConfirmacionReporte.class.getName());
-    
-    private static final Color COLOR_FONDO = new Color(255, 220, 235);
-    private static final Color COLOR_TEXTO = new Color(102, 0, 51);
-    private static final Color COLOR_BTN = new Color(80, 80, 80);
+    private static final java.util.logging.Logger logger =
+            java.util.logging.Logger.getLogger(
+                    FrmConfirmacionReporte.class.getName());
+
+    private static final Color COLOR_FONDO = new Color(255, 180, 205);
+    private static final Color COLOR_TEXTO = new Color(45, 18, 32);
+    private static final Color COLOR_LINEA = new Color(205, 105, 145);
+    private static final Color COLOR_BTN = new Color(0, 0, 0);
+    private static final Color COLOR_BTN_HOVER = new Color(55, 35, 45);
 
     private final boolean exitoso;
     private final String mensaje;
 
-    private javax.swing.JPanel pnlPrincipal;
-    private javax.swing.JLabel lblIcono;
-    private javax.swing.JLabel lblMensaje;
-    private javax.swing.JButton btnCerrar;
+    private JPanel pnlPrincipal;
+    private JLabel lblIcono;
+    private JLabel lblMensaje;
+    private JButton btnCerrar;
 
-    /**
-     * Creates new form FrmConfirmacionReporte
-     */
     public FrmConfirmacionReporte(java.awt.Frame parent,
             boolean exitoso,
             String mensaje) {
@@ -42,75 +49,140 @@ public class FrmConfirmacionReporte extends javax.swing.JDialog {
         initVista();
         initEventos();
     }
-    // </editor-fold>
-    
 
-    private void initVista()
-    {
-        setDefaultCloseOperation(
-                javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+    private void initVista() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Confirmacion");
         setResizable(false);
-        setSize(340, 240);
-        setLocationRelativeTo(getParent());
         setUndecorated(true);
+        setBackground(new Color(0, 0, 0, 0));
 
-        pnlPrincipal = new javax.swing.JPanel();
+        pnlPrincipal = new RoundedPanel(18);
         pnlPrincipal.setBackground(COLOR_FONDO);
-        pnlPrincipal.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(200, 150, 170), 1));
         pnlPrincipal.setLayout(null);
+        pnlPrincipal.setBorder(BorderFactory.createEmptyBorder());
+        pnlPrincipal.setPreferredSize(new java.awt.Dimension(285, 175));
 
-        // icono segun resultado
-        lblIcono = new javax.swing.JLabel();
-        lblIcono.setFont(new Font("Segoe UI", Font.PLAIN, 48));
+        lblIcono = new JLabel();
+        lblIcono.setFont(new Font("Segoe UI", Font.BOLD, 32));
         lblIcono.setHorizontalAlignment(SwingConstants.CENTER);
+        lblIcono.setForeground(Color.BLACK);
 
-        if (exitoso)
-        {
-            // check verde para reporte exitoso
-            lblIcono.setText("✔");
-            lblIcono.setForeground(new Color(0, 160, 80));
-        }
-        else
-        {
-            // triangulo de advertencia para reporte duplicado
-            lblIcono.setText("⚠");
-            lblIcono.setForeground(new Color(200, 120, 0));
+        if (exitoso) {
+            lblIcono.setText("✓");
+            lblIcono.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+            lblIcono.setBounds(127, 22, 31, 31);
+        } else {
+            lblIcono.setText("!");
+            lblIcono.setBorder(new TriangleBorder());
+            lblIcono.setBounds(126, 22, 34, 34);
         }
 
-        lblIcono.setBounds(0, 30, 340, 60);
         pnlPrincipal.add(lblIcono);
 
-        // mensaje principal
-        lblMensaje = new javax.swing.JLabel(
+        lblMensaje = new JLabel(
                 "<html><div style='text-align:center;'>"
                 + mensaje
                 + "</div></html>");
-        lblMensaje.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblMensaje.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblMensaje.setForeground(COLOR_TEXTO);
         lblMensaje.setHorizontalAlignment(SwingConstants.CENTER);
-        lblMensaje.setBounds(20, 105, 300, 50);
+        lblMensaje.setBounds(20, 68, 245, 38);
         pnlPrincipal.add(lblMensaje);
 
-        // boton cerrar
-        btnCerrar = new javax.swing.JButton("Cerrar");
+        JPanel separador = new JPanel();
+        separador.setBackground(COLOR_LINEA);
+        separador.setBounds(0, 112, 285, 1);
+        pnlPrincipal.add(separador);
+
+        btnCerrar = new JButton("Cerrar");
         btnCerrar.setBackground(COLOR_BTN);
         btnCerrar.setForeground(Color.WHITE);
-        btnCerrar.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnCerrar.setFont(new Font("Segoe UI", Font.BOLD, 8));
         btnCerrar.setBorderPainted(false);
         btnCerrar.setFocusPainted(false);
         btnCerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnCerrar.setBounds(110, 175, 120, 36);
+        btnCerrar.setBounds(10, 137, 265, 18);
         pnlPrincipal.add(btnCerrar);
 
         setContentPane(pnlPrincipal);
+        pack();
+        setLocationRelativeTo(getParent());
     }
 
-    private void initEventos()
-    {
+    private void initEventos() {
         btnCerrar.addActionListener(e -> dispose());
+
+        btnCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnCerrar.setBackground(COLOR_BTN_HOVER);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnCerrar.setBackground(COLOR_BTN);
+            }
+        });
+    }
+
+    private static class RoundedPanel extends JPanel {
+
+        private final int radius;
+
+        public RoundedPanel(int radius) {
+            this.radius = radius;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(),
+                    radius, radius);
+
+            g2.dispose();
+            super.paintComponent(g);
+        }
+    }
+
+    private static class TriangleBorder extends javax.swing.border.AbstractBorder {
+
+        @Override
+        public void paintBorder(java.awt.Component c,
+                Graphics g,
+                int x,
+                int y,
+                int width,
+                int height) {
+
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int[] xs = {
+                x + width / 2,
+                x + 3,
+                x + width - 3
+            };
+
+            int[] ys = {
+                y + 2,
+                y + height - 3,
+                y + height - 3
+            };
+
+            g2.setColor(Color.BLACK);
+            g2.drawPolygon(xs, ys, 3);
+
+            g2.dispose();
+        }
     }
 
     /**

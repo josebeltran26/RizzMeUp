@@ -8,83 +8,130 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
  *
  * @author Roger Jr
  */
-public class FrmExitoEvaluacion extends javax.swing.JPanel {
-private static final Logger logger = Logger.getLogger(
+public class FrmExitoEvaluacion extends javax.swing.JPanel 
+{
+    private static final Logger logger = Logger.getLogger(
             FrmExitoEvaluacion.class.getName());
 
-    private static final Color COLOR_FONDO = new Color(255, 235, 245);
-    private static final Color COLOR_TEXTO = new Color(102, 0, 51);
-    private static final Color COLOR_BTN = new Color(80, 80, 80);
-    
+    private static final Color COLOR_FONDO = new Color(255, 242, 248);
+    private static final Color COLOR_TARJETA = new Color(255, 174, 202);
+    private static final Color COLOR_TEXTO = new Color(50, 20, 34);
+    private static final Color COLOR_BTN = new Color(0, 0, 0);
+    private static final Color COLOR_BTN_HOVER = new Color(55, 35, 45);
 
     private final IContenedorPrincipal padre;
 
-    private javax.swing.JLabel lblIcono;
-    private javax.swing.JLabel lblMensaje;
-    private javax.swing.JButton btnCerrar;
+    private JLabel lblIcono;
+    private JLabel lblMensaje;
+    private JButton btnCerrar;
 
-    public FrmExitoEvaluacion(IContenedorPrincipal  padre)
-    {
+    public FrmExitoEvaluacion(IContenedorPrincipal padre) {
         this.padre = padre;
         initVista();
         initEventos();
     }
-    // </editor-fold>
 
-
-    private void initVista()
-    {
+    private void initVista() {
         setBackground(COLOR_FONDO);
         setLayout(null);
         setPreferredSize(new Dimension(860, 770));
 
-        // icono check verde
-        lblIcono = new javax.swing.JLabel("✔");
-        lblIcono.setFont(new Font("Segoe UI", Font.PLAIN, 72));
-        lblIcono.setForeground(new Color(0, 160, 80));
-        lblIcono.setHorizontalAlignment(SwingConstants.CENTER);
-        lblIcono.setBounds(0, 260, 860, 100);
-        add(lblIcono);
+        RoundedPanel tarjeta = new RoundedPanel(20);
+        tarjeta.setBackground(COLOR_TARJETA);
+        tarjeta.setLayout(null);
+        tarjeta.setBounds(300, 155, 270, 175);
+        add(tarjeta);
 
-        // mensaje de exito
-        lblMensaje = new javax.swing.JLabel(
-                "<html><div style='text-align:center;'>"
-                + "Reporte evaluado correctamente"
-                + "</div></html>");
-        lblMensaje.setFont(new Font("Segoe UI", Font.PLAIN, 22));
+        lblIcono = new JLabel("");
+        lblIcono.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblIcono.setForeground(Color.BLACK);
+        lblIcono.setHorizontalAlignment(SwingConstants.CENTER);
+        lblIcono.setBorder(javax.swing.BorderFactory.createLineBorder(
+                Color.BLACK, 3));
+        lblIcono.setBounds(120, 20, 30, 30);
+        tarjeta.add(lblIcono);
+
+        lblMensaje = new JLabel("Reporte evaluado correctamente");
+        lblMensaje.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblMensaje.setForeground(COLOR_TEXTO);
         lblMensaje.setHorizontalAlignment(SwingConstants.CENTER);
-        lblMensaje.setBounds(0, 375, 860, 50);
-        add(lblMensaje);
+        lblMensaje.setBounds(20, 62, 230, 25);
+        tarjeta.add(lblMensaje);
 
-        // boton para volver a la bandeja
-        btnCerrar = new javax.swing.JButton("Volver a reportes");
+        JPanel separador = new JPanel();
+        separador.setBackground(new Color(210, 126, 158));
+        separador.setBounds(0, 95, 270, 1);
+        tarjeta.add(separador);
+
+        btnCerrar = new JButton("Cerrar");
         btnCerrar.setBackground(COLOR_BTN);
         btnCerrar.setForeground(Color.WHITE);
-        btnCerrar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnCerrar.setFont(new Font("Segoe UI", Font.BOLD, 8));
         btnCerrar.setBorderPainted(false);
         btnCerrar.setFocusPainted(false);
         btnCerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnCerrar.setBounds(330, 450, 200, 42);
-        add(btnCerrar);
+        btnCerrar.setBounds(10, 135, 250, 18);
+        tarjeta.add(btnCerrar);
     }
 
-    // evento del boton
     private void initEventos() {
-        btnCerrar.addActionListener(e
-                -> {
+        btnCerrar.addActionListener(e -> {
             if (padre != null) {
                 padre.mostrarPanel(new FrmBandejaReportes());
             }
         });
+
+        btnCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnCerrar.setBackground(COLOR_BTN_HOVER);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnCerrar.setBackground(COLOR_BTN);
+            }
+        });
     }
+
+    private static class RoundedPanel extends JPanel {
+
+        private final int radius;
+
+        public RoundedPanel(int radius) {
+            this.radius = radius;
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(),
+                    radius, radius);
+
+            g2.dispose();
+            super.paintComponent(g);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
